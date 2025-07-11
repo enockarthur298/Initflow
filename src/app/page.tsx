@@ -1,23 +1,17 @@
-import Image from "next/image";
-import {Client} from "./client";
-import { Suspense } from "react";
-import { dehydrate,HydrationBoundary } from "@tanstack/react-query";
-import { getQueryClient,trpc } from "@/trpc/server";
-
-const Page = async () => {
-const queryClient = getQueryClient();
-const a = await queryClient.prefetchQuery(trpc.createAI.queryOptions({text:"Enock Prefetch"}));
+"use client";
+import { useMutation } from "@tanstack/react-query";
+import { useTRPC } from "@/trpc/client";
+import { Button } from "@/components/ui/button";
+const Page = () => {
+  const trpc = useTRPC();
+  const invoke = useMutation(trpc.invoke.mutationOptions({}))
 
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      <Suspense fallback={<div>Loading...</div>}>
-    <Client />
-    </Suspense>
-    </HydrationBoundary>
-
+    <div className="p-4 max-w-2xl mx-auto">
+<Button onClick={() => invoke.mutate({text:"Enock"})}>Invoke</Button>
 
     
-  );
-  
+    </div>
+  )
 }
 export default Page;
